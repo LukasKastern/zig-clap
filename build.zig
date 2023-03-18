@@ -48,10 +48,11 @@ pub fn build(b: *std.Build) void {
 
 fn readMeStep(b: *std.Build) *std.Build.Step {
     const s = b.allocator.create(std.build.Step) catch unreachable;
-    s.* = std.build.Step.init(.custom, "ReadMeStep", b.allocator, struct {
-        fn make(step: *std.build.Step) anyerror!void {
+    s.* = std.build.Step.init(.{ .id = .custom, .name = "ReadMeStep", .owner = b, .makeFn = struct {
+        fn make(step: *std.Build.Step, progress : *std.Progress.Node) anyerror!void {
             @setEvalBranchQuota(10000);
             _ = step;
+            _ = progress;
             const file = try std.fs.cwd().createFile("README.md", .{});
             const stream = file.writer();
             try stream.print(@embedFile("example/README.md.template"), .{
@@ -62,6 +63,6 @@ fn readMeStep(b: *std.Build) *std.Build.Step {
                 @embedFile("example/usage.zig"),
             });
         }
-    }.make);
+    }.make });
     return s;
 }
