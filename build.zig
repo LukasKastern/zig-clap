@@ -29,7 +29,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         });
         example.addModule("clap", clap_mod);
-        example.install();
+        _ = b.addInstallArtifact(example);
         example_step.dependOn(&example.step);
     }
 
@@ -49,7 +49,7 @@ pub fn build(b: *std.Build) void {
 fn readMeStep(b: *std.Build) *std.Build.Step {
     const s = b.allocator.create(std.build.Step) catch unreachable;
     s.* = std.build.Step.init(.{ .id = .custom, .name = "ReadMeStep", .owner = b, .makeFn = struct {
-        fn make(step: *std.Build.Step, progress : *std.Progress.Node) anyerror!void {
+        fn make(step: *std.Build.Step, progress: *std.Progress.Node) anyerror!void {
             @setEvalBranchQuota(10000);
             _ = step;
             _ = progress;
