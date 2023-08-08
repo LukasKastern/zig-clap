@@ -29,7 +29,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         });
         example.addModule("clap", clap_mod);
-        _ = b.addInstallArtifact(example);
+        b.installArtifact(example);
         example_step.dependOn(&example.step);
     }
 
